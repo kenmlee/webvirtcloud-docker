@@ -20,7 +20,7 @@ RUN apt-get -qq update \
 
 RUN cd webvirtcloud \
     && cp conf/supervisor/webvirtcloud.conf /etc/supervisor/conf.d/ \
-    && cp conf/ngnix/webvirtcloud.conf /etc/nginx/conf.d/ \
+    && cp conf/nginx/webvirtcloud.conf /etc/nginx/conf.d/ \
     && cd .. \
     && mv webvirtcloud /srv \
     && cd /srv/webvirtcloud \
