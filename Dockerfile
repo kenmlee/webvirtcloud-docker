@@ -25,7 +25,7 @@ RUN cd webvirtcloud \
     && mv webvirtcloud /srv \
     && cd /srv/webvirtcloud \
     && virtualenv venv \
-    && source venv/bin/activate \
+    && . venv/bin/activate \
     && pip install -r conf\requirements.txt \
     && python manage.py migrate \
     && rm /etc/nginx/sites-enabled/default \
