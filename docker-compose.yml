@@ -4,4 +4,4 @@ services:
     ports:
       - "80:80"
       - "6080:6080"
-	image: daocloud.io/ken/webvirtcloud
+    image: daocloud.io/ken/webvirtcloud
