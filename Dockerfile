@@ -34,18 +34,19 @@ RUN cd webvirtcloud \
 
 RUN mkdir /var/www \
     && mkdir /var/www/.ssh \
-    && chown -R www-data:www-data /var/www \
     && touch /var/www/.ssh/config \
-    && echo -e "StrictHostKeyChecking=no\nUserKnownHostsFile=/dev/null" >> /var/www/.ssh/config \
+    && echo "StrictHostKeyChecking=no" >> /var/www/.ssh/config \
+    && echo "UserKnownHostsFile=/dev/null" >> /var/www/.ssh/config \
     && chmod 0600 /var/www/.ssh/config
 
 COPY webvirtcloud_rsa /var/www/.ssh/id_rsa
 
-RUN chmod -R 0600 /var/www/.ssh/id_rsa
+RUN chmod -R 0600 /var/www/.ssh/id_rsa \
+    && chown -R www-data:www-data /var/www 
 
 # ENTRYPOINT "/usr/bin/supervisord"
 # CMD ["/usr/bin/supervisord", "-n"]
 
-ENTRYPOINT "service nginx start && service supervisor start"
+# ENTRYPOINT "service nginx start && service supervisor start"
 
 EXPOSE 80 6080 8000
