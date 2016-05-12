@@ -19,7 +19,6 @@ RUN apt-get -qq update \
     && git clone https://github.com/retspen/webvirtcloud.git
 
 RUN cd webvirtcloud \
-    && cp conf/supervisor/webvirtcloud.conf /etc/supervisor/conf.d/ \
     && cp conf/nginx/webvirtcloud.conf /etc/nginx/conf.d/ \
     && cd .. \
     && mv webvirtcloud /srv \
@@ -40,13 +39,11 @@ RUN mkdir /var/www \
     && chmod 0600 /var/www/.ssh/config
 
 COPY webvirtcloud_rsa /var/www/.ssh/id_rsa
+COPY webvirtcloud.conf /etc/supervisor/conf.d/webvirtcloud.conf
 
 RUN chmod -R 0600 /var/www/.ssh/id_rsa \
     && chown -R www-data:www-data /var/www 
 
-# ENTRYPOINT "/usr/bin/supervisord"
-# CMD ["/usr/bin/supervisord", "-n"]
+ENTRYPOINT "supervisorctl start all"
 
-# ENTRYPOINT "service nginx start && service supervisor start"
-
-EXPOSE 80 6080 8000
+EXPOSE 80 6080 
