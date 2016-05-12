@@ -39,7 +39,7 @@ RUN mkdir /var/www \
     && echo -e "StrictHostKeyChecking=no\nUserKnownHostsFile=/dev/null" >> /var/www/.ssh/config \
     && chmod 0600 /var/www/.ssh/config
 
-COPY wevvirtcloud_rsa /var/www/.ssh/id_rsa
+COPY webvirtcloud_rsa /var/www/.ssh/id_rsa
 
 RUN chmod -R 0600 /var/www/.ssh/id_rsa
 
