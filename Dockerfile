@@ -30,6 +30,7 @@ RUN cd webvirtcloud \
     && pip install -r conf/requirements.txt \
     && python manage.py migrate \
     && rm /etc/nginx/sites-enabled/default \
+    && chown -R www-data:www-data /srv/webvirtcloud \
     && service nginx restart
 
 # ENTRYPOINT "/usr/bin/supervisord"
