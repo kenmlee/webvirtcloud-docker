@@ -34,6 +34,8 @@ RUN cd webvirtcloud \
     && service nginx restart
 
 # ENTRYPOINT "/usr/bin/supervisord"
-CMD ["/usr/bin/supervisord", "-n"]
+# CMD ["/usr/bin/supervisord", "-n"]
 
-EXPOSE 80
+ENTRYPOINT "service nginx start && service supervisor start"
+
+EXPOSE 80 6080 8000
