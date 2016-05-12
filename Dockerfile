@@ -20,6 +20,7 @@ RUN apt-get -qq update \
 
 RUN cd webvirtcloud \
     && cp conf/nginx/webvirtcloud.conf /etc/nginx/conf.d/ \
+    && cp conf/supervisor/webvirtcloud.conf /etc/nginx/conf.d/ \
     && cd .. \
     && mv webvirtcloud /srv \
     && cd /srv/webvirtcloud \
@@ -39,11 +40,13 @@ RUN mkdir /var/www \
     && chmod 0600 /var/www/.ssh/config
 
 COPY webvirtcloud_rsa /var/www/.ssh/id_rsa
-COPY webvirtcloud.conf /etc/supervisor/conf.d/webvirtcloud.conf
 
 RUN chmod -R 0600 /var/www/.ssh/id_rsa \
     && chown -R www-data:www-data /var/www 
 
-ENTRYPOINT "/usr/bin/supervisord"
-
 EXPOSE 80 6080 
+
+ADD entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT "/entrypoint.sh"
+

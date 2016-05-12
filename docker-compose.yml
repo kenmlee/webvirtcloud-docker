@@ -1,7 +1,7 @@
-version '2'
+version: '2'
 services:
-	webvirtcloud:
-		ports:
-			- "80:80"
-			- "6080:6080"
-		images: daocloud.io/ken/webvirtcloud
+  webvirtcloud:
+    ports:
+      - "80:80"
+      - "6080:6080"
+	image: daocloud.io/ken/webvirtcloud
