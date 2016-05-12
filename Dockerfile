@@ -44,6 +44,6 @@ COPY webvirtcloud.conf /etc/supervisor/conf.d/webvirtcloud.conf
 RUN chmod -R 0600 /var/www/.ssh/id_rsa \
     && chown -R www-data:www-data /var/www 
 
-ENTRYPOINT "supervisorctl start all"
+ENTRYPOINT "/usr/bin/supervisord"
 
 EXPOSE 80 6080 
