@@ -17,9 +17,8 @@ RUN apt-get -qq update \
         libsasl2-modules \
         && git clone https://github.com/retspen/webvirtcloud.git
 
-RUN mkdir /srv \
-    && mv /webvirtcloud /srv/webvirtcloud \
-    && cp conf/supervisor/webvirtcloud.conf /etc/supervisor/conf.d/ \
+RUN mv /webvirtcloud /srv/webvirtcloud \
+    && cp /srv/webvirtcloud/conf/supervisor/webvirtcloud.conf /etc/supervisor/conf.d/ \
     && chown -R www-data:www-data /srv/webvirtcloud
 
 COPY settings.py /srv/webvirtcloud/webvirtcloud/settings.py
