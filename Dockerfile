@@ -11,6 +11,7 @@ RUN apt-get -qq update \
         python-virtualenv \
         python-dev \
         postgresql-client \
+        libvirt-dev \
         libxml2-dev \
         zlib1g-dev \
         supervisor \
