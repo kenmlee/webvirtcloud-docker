@@ -6,31 +6,30 @@ ENV REFRESHED_AT 2016-05-11
 RUN apt-get -qq update \
     && apt-get upgrade -y \
     && apt-get install -y \
-        git \
         python-pip \
         python-virtualenv \
         python-dev \
         libxml2-dev \
-        libvirt-dev \
         zlib1g-dev \
         supervisor \
-        nginx \
         libsasl2-modules \
-    && git clone https://github.com/retspen/webvirtcloud.git
 
-RUN cd webvirtcloud \
-    && cp conf/nginx/webvirtcloud.conf /etc/nginx/conf.d/ \
-    && cp conf/supervisor/webvirtcloud.conf /etc/supervisor/conf.d/ \
-    && cd .. \
-    && mv webvirtcloud /srv \
-    && cd /srv/webvirtcloud \
+RUN mkdir /srv \
+    && rm /etc/nginx/sites-enabled/default \
+    && chown -R www-data:www-data /srv/webvirtcloud
+
+COPY webvirtcloud/ /srv/webvirtcloud
+
+COPY webvirtcloud-nginx.conf /etc/nginx/conf.d/webvirtcloud.conf
+COPY webvirtcloud-supervisor.conf /etc/supervisor/conf.d/webvirtcloud.conf
+
+COPY settings.py /srv/webvirtcloud/webvirtcloud/settings.py
+
+RUN cd /srv/webvirtcloud \
     && virtualenv venv \
     && . venv/bin/activate \
     && pip install --upgrade pip \
-    && pip install -r conf/requirements.txt \
-    && python manage.py migrate \
-    && rm /etc/nginx/sites-enabled/default \
-    && chown -R www-data:www-data /srv/webvirtcloud
+    && pip install -r conf/requirements.txt
 
 RUN mkdir /var/www \
     && mkdir /var/www/.ssh \
@@ -39,13 +38,18 @@ RUN mkdir /var/www \
     && echo "UserKnownHostsFile=/dev/null" >> /var/www/.ssh/config \
     && chmod 0600 /var/www/.ssh/config
 
-COPY webvirtcloud_rsa /var/www/.ssh/id_rsa
-COPY webvirtcloud_rsa.pub /var/www/.ssh/id_rsa.pub
+COPY wvc_rsa /var/www/.ssh/id_rsa
+COPY wvc_rsa.pub /var/www/.ssh/id_rsa.pub
+
 RUN chmod -R 0600 /var/www/.ssh/id_rsa \
     && chown -R www-data:www-data /var/www
 
 EXPOSE 80 6080
 
 COPY entrypoint.sh /entrypoint.sh
+COPY init.sh /init.sh
+
 RUN chmod +x /entrypoint.sh
+    && chmod +x /init.sh
+
 ENTRYPOINT "/entrypoint.sh"
