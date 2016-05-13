@@ -6,6 +6,7 @@ ENV REFRESHED_AT 2016-05-11
 RUN apt-get -qq update \
     && apt-get upgrade -y \
     && apt-get install -y \
+        git \
         python-pip \
         python-virtualenv \
         python-dev \
