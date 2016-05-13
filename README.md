@@ -1,15 +1,15 @@
 # webvirtcloud in Docker
-[webvirtcloud project](https://github.com/retspen/webvirtcloud) (Thanks to Anatoliy Guskov)
+## [webvirtcloud project](https://github.com/retspen/webvirtcloud) (Thanks to Anatoliy Guskov)
 
-[webvirtcloud](https://github.com/retspen/webvirtcloud)是一个用来管理KVM（其实是virsh）的基于浏览器的管理界面，但是安装配置步骤较多，不太方便，这里用Docker来简化安装配置。
+>[webvirtcloud](https://github.com/retspen/webvirtcloud)是一个用来管理KVM（实际上是通过libvirt）的基于浏览器的管理界面，但是安装配置步骤较多，不太方便，这里用Docker来简化安装配置。
 
-两个版本：
-1. allinone模式，所有webvirtcloud, nginx, sqlite都运行于一个容器中。以下提到此模式的镜像时，称为allinone镜像。
-2. standalone模式， 每个组件单独运行在自己的容器中，包括webvirtcloud, nginx, postgresql。以下提到吃模式的镜像时，仅指用于此模式的webvirtcloud镜像，不包括nginx和postgres镜像。
+- 两个版本：
+> 1. allinone模式，所有webvirtcloud, nginx, sqlite都运行于一个容器中。以下提到此模式的镜像时，称为allinone镜像。
+> 2. standalone模式， 每个组件单独运行在自己的容器中，包括webvirtcloud, nginx, postgresql。以下提到吃模式的镜像时，仅指用于此模式的webvirtcloud镜像，不包括nginx和postgres镜像。
 
-配置中经常提到两种服务器，需要区分一下：
-1. webvirtcloud服务器，用于安装运行webvirtcloud管理平台的服务器
-2. virsh服务器，运行virsh的服务器，被webvirtcloud服务器所管理的服务器
+- 配置中经常提到两种服务器，需要区分一下：
+> 1. webvirtcloud服务器，用于安装运行webvirtcloud管理平台的服务器
+> 2. virsh服务器，运行virsh的服务器，被webvirtcloud服务器所管理的服务器
 
 --------
 ## 使用allinone版本的步骤
@@ -40,8 +40,13 @@ $ docker-compose up -d
 这个命令会拉起webvirtcloud, nginx和postgresql三个容器，后两个容器采用docker的官方镜像。
 如果不想用docker-compose，则需要运行以下命令，**其中第二行是进行初始化，仅需运行一次**
 ```
-$ docker run -d --name db -p 5432:5432 postgres
-$ docker run -it --rm --link db daocloud.io/ken/wvc /init.sh
+$ docker run -d --name postgres \
+> -e POSTGRES_PASSWORD wvcpasswd \
+> postgres
+
+$ docker run -it --rm --link postgres:db \
+> daocloud.io/ken/wvc /init.sh
+
 $ docker create -v /srv/webvirtcloud --name wvcdata \
 > daocloud.io/ken/wvc /bin/true
 $ docker run -d --name wvc -p 8000:8000 --link db \
@@ -113,6 +118,8 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7zEEPi7AeG4Luk1nP7faf8KzWmyyMXQmNf7WMZOwJ
 [更多内容......](https://github.com/retspen/webvirtmgr/wiki/Setup-SSH-Authorization)
 
 3. TLS连接
+(TBD)
+
 4. Unix Socket连接
 用于连接运行webvirtcloud服务器上的virsh服务，需要在运行webvirtcloud容器时指定/var/run/libvirt/libvirt-sock文件。由于这个文件是归属于root:libvirt的，而容器内没有libvirt组，并且运行用户是www-data而不是root，在容器内需要将www-data用户加入到libvirt组中。这个操作已经由entrypoint.sh脚本自动处理了。
 

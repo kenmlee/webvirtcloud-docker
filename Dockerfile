@@ -9,19 +9,17 @@ RUN apt-get -qq update \
         python-pip \
         python-virtualenv \
         python-dev \
+        postgresql-client \
         libxml2-dev \
         zlib1g-dev \
         supervisor \
         libsasl2-modules \
+        && git clone https://github.com/retspen/webvirtcloud.git
 
 RUN mkdir /srv \
-    && rm /etc/nginx/sites-enabled/default \
+    && mv /webvirtcloud /srv/webvirtcloud \
+    && cp conf/supervisor/webvirtcloud.conf /etc/supervisor/conf.d/ \
     && chown -R www-data:www-data /srv/webvirtcloud
-
-COPY webvirtcloud/ /srv/webvirtcloud
-
-COPY webvirtcloud-nginx.conf /etc/nginx/conf.d/webvirtcloud.conf
-COPY webvirtcloud-supervisor.conf /etc/supervisor/conf.d/webvirtcloud.conf
 
 COPY settings.py /srv/webvirtcloud/webvirtcloud/settings.py
 
@@ -29,7 +27,8 @@ RUN cd /srv/webvirtcloud \
     && virtualenv venv \
     && . venv/bin/activate \
     && pip install --upgrade pip \
-    && pip install -r conf/requirements.txt
+    && pip install -r conf/requirements.txt \
+    && pip install psycopg2
 
 RUN mkdir /var/www \
     && mkdir /var/www/.ssh \
@@ -44,7 +43,7 @@ COPY wvc_rsa.pub /var/www/.ssh/id_rsa.pub
 RUN chmod -R 0600 /var/www/.ssh/id_rsa \
     && chown -R www-data:www-data /var/www
 
-EXPOSE 80 6080
+EXPOSE 8000 6080
 
 COPY entrypoint.sh /entrypoint.sh
 COPY init.sh /init.sh
