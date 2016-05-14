@@ -41,10 +41,11 @@ $ docker-compose up -d
 如果不想用docker-compose，则需要运行以下命令，**其中第二行是进行初始化，仅需运行一次**
 ```
 $ docker run -d --name postgres \
-> -e POSTGRES_PASSWORD wvcpasswd \
+> -e POSTGRES_PASSWORD your_postgres_password \
 > postgres
 
 $ docker run -it --rm --link postgres:db \
+> -e DB_PASSWORD=your_wvc_db_password \
 > daocloud.io/ken/wvc /init.sh
 
 $ docker create -v /srv/webvirtcloud --name wvcdata \

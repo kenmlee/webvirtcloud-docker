@@ -11,4 +11,4 @@ if [ -a "/var/run/libvirt/libvirt-sock" ]; then
     usermod -a -G libvirtd www-data
 fi
 
-/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+/usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf

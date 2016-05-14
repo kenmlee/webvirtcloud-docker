@@ -53,4 +53,4 @@ COPY init.sh /init.sh
 RUN chmod +x /entrypoint.sh \
     && chmod +x /init.sh
 
-ENTRYPOINT "/entrypoint.sh"
+CMD "/entrypoint.sh"
