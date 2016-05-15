@@ -37,7 +37,7 @@ $ docker-compose up -d
 ```
 $ docker-compose up -d
 ```
-这个命令会拉起webvirtcloud, nginx和postgresql三个容器，后两个容器采用docker的官方镜像。
+这个命令会拉起webvirtcloud, nginx和postgreSQL三个容器，nginx可以选择daocloud.io/ken/wvcweb或者采用docker的官方镜像并出入配置文件，postgreSQL则采用官方镜像。
 如果不想用docker-compose，则需要运行以下命令，**其中第二行是进行初始化，仅需运行一次**
 ```
 $ docker run -d --name postgres \
@@ -52,7 +52,7 @@ $ docker run -it --rm --link postgres:db \
 $ docker run -d --name wvc -p 6080:6080 --link postgres:db daocloud.io/ken/wvc
 $ docker run -d --name web -p 80:80 --link wvc \
 > --volumes-from wvc:ro \
-> nginx
+> daocloud.io/ken/wvcweb
 ```
 
 对于最后nginx容器，如果需要指定不同的URL，则需要修改webvirtcloud.conf配置文件，如果还需要调整其他配置，则可以传入自己的nginx.conf文件，如下：
@@ -167,7 +167,7 @@ $ docker run -d --name webvirtcloud -p 80:80 -p 6080:6080 \
 ```
 $ docker run -d --name wvc -p 8000:8000 --link db \
 > --volume-from wvcdata:/srv/webvirtcloud \
-> -v /var/run/libvirt/libvirt-sock:/var/run/libvirt-sock \
+> -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
 > daocloud.io/ken/wvc
 ```
 
