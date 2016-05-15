@@ -28,9 +28,6 @@ EOSQL
 cd /srv/webvirtcloud
 source venv/bin/activate
 
-# update gunicorn configuration
-sed -i 's/127.0.0.1/0.0.0.0/g' gunicorn.conf.py
-
 # Another bug in migration "0002" of App logs.
 # I worked out a workaround
 sed -i 's/AddField/AlterField/g' logs/migrations/0002_auto_20150316_1420.py
