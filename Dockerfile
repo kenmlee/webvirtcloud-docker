@@ -30,7 +30,8 @@ RUN cd /srv/webvirtcloud \
     && . venv/bin/activate \
     && pip install --upgrade pip \
     && pip install -r conf/requirements.txt \
-    && pip install psycopg2
+    && pip install psycopg2 \
+    && sed -i 's/127.0.0.1/0.0.0.0/g' /srv/webvirtcloud/gunicorn.conf.py
 
 RUN mkdir /var/www \
     && mkdir /var/www/.ssh \
