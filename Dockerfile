@@ -46,6 +46,7 @@ RUN chmod -R 0600 /var/www/.ssh/id_rsa \
     && chown -R www-data:www-data /var/www
 
 EXPOSE 8000 6080
+VOLUME /srv/webvirtcloud
 
 COPY entrypoint.sh /entrypoint.sh
 COPY init.sh /init.sh

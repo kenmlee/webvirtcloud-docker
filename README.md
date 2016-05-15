@@ -48,12 +48,10 @@ $ docker run -it --rm --link postgres:db \
 > -e DB_PASSWORD=your_wvc_db_password \
 > daocloud.io/ken/wvc /init.sh
 
-$ docker create -v /srv/webvirtcloud --name wvcdata \
 > daocloud.io/ken/wvc /bin/true
-$ docker run -d --name wvc -p 8000:8000 --link db \
-> --volume-from wvcdata:/srv/webvirtcloud daocloud.io/ken/wvc
+$ docker run -d --name wvc --link postgres:db daocloud.io/ken/wvc
 $ docker run -d --name web -p 80:80 --link wvc \
-> --volume-from wvcdata:/srv/webvirtcloud \
+> --volume-from wvc:ro \
 > -v ${PWD}/nginx.conf:/etc/nginx/nginx.conf \
 > -v ${PWD}/webvirtcloud.conf:/etc/nginx/conf.d/webvirtcloud.conf \
 > nginx
