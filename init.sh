@@ -28,12 +28,15 @@ EOSQL
 cd /srv/webvirtcloud
 source venv/bin/activate
 
-# due some bug in Django 1.8. We must run "migrate auth" first otherwise
-# contenttypes will failed sometime when try to migration.
-python manage.py migrate auth
+# Update nginx configuration file with 'wvc' as hostname
+set -i 's/127.0.0.1/wvc/g' conf/nginx/webvirtcloud.conf
 
 # Another bug in migration "0002" of App logs.
 # I worked out a workaround
 sed -i 's/AddField/AlterField/g' logs/migrations/0002_auto_20150316_1420.py
+
+# due some bug in Django 1.8. We must run "migrate auth" first otherwise
+# contenttypes will failed sometime when try to migration.
+python manage.py migrate auth
 
 python manage.py migrate

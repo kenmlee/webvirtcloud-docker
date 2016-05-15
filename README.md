@@ -49,12 +49,46 @@ $ docker run -it --rm --link postgres:db \
 > daocloud.io/ken/wvc /init.sh
 
 > daocloud.io/ken/wvc /bin/true
-$ docker run -d --name wvc --link postgres:db daocloud.io/ken/wvc
+$ docker run -d --name wvc -p 6080:6080 --link postgres:db daocloud.io/ken/wvc
 $ docker run -d --name web -p 80:80 --link wvc \
-> --volume-from wvc:ro \
+> --volumes-from wvc:ro \
+> nginx
+```
+
+对于最后nginx容器，如果需要指定不同的URL，则需要修改webvirtcloud.conf配置文件，如果还需要调整其他配置，则可以传入自己的nginx.conf文件，如下：
+
+```
+$ docker run -d --name web -p 80:80 --link wvc \
+> --volumes-from wvc:ro \
 > -v ${PWD}/nginx.conf:/etc/nginx/nginx.conf \
 > -v ${PWD}/webvirtcloud.conf:/etc/nginx/conf.d/webvirtcloud.conf \
 > nginx
+```
+其中配置文件webvirtcloud.conf中，注意保持LINK的名称“wvc”，如果你LINK的容器名称不知"wvc"，则需要做相应修改
+```
+server {
+    listen 80;
+
+    #server_name webvirtcloud.example.com;
+    #access_log /var/log/nginx/webvirtcloud-access_log;
+
+    location /static/ {
+        root /srv/webvirtcloud;
+        expires max;
+    }
+
+    location / {
+        proxy_pass http://wvc:8000;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-for $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host:$server_port;
+        proxy_set_header X-Forwarded-Proto $remote_addr;
+        proxy_connect_timeout 600;
+        proxy_read_timeout 600;
+        proxy_send_timeout 600;
+        client_max_body_size 1024M;
+    }
+}
 ```
 
 --------
