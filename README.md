@@ -33,12 +33,17 @@ $ docker-compose up -d
 ## 使用standalone版本的步骤
 1. 在webvirtcloud服务器上安装配置docker(略)
 
-2. 下载docker-compose.yml文件，并在同一目录下运行
+2a. 下载docker-compose.yml文件，并在同一目录下运行
 ```
 $ docker-compose up -d
 ```
-这个命令会拉起webvirtcloud, nginx和postgreSQL三个容器，nginx可以选择daocloud.io/ken/wvcweb或者采用docker的官方镜像并出入配置文件，postgreSQL则采用官方镜像。
-如果不想用docker-compose，则需要运行以下命令，**其中第二行是进行初始化，仅需运行一次**
+这个命令会拉起webvirtcloud, nginx和postgreSQL三个容器，nginx采用基于官方镜像的daocloud.io/ken/wvcweb及内置配置文件，postgreSQL则采用官方镜像。
+在启动后还需要执行初始化操作：
+```
+$ docker exec -i wvc /init.sh
+```
+
+2b. 如果不想用docker-compose，则需要运行以下命令，**其中第二行是进行初始化，仅需运行一次**
 ```
 $ docker run -d --name postgres \
 > -e POSTGRES_PASSWORD your_postgres_password \

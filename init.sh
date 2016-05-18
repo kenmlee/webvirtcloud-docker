@@ -1,26 +1,28 @@
 #! /bin/bash
+username=postgres
 
-if [ -z $DB_ENV_POSTGRES_USER ]; then
-    USERNAME=postgres
-else
-    USERNAME=$DB_ENV_POSTGRES_USER
+if [ $DB_ENV_POSTGRES_USER ]; then
+    username=$DB_ENV_POSTGRES_USER
 fi
 
-if [ -n $DB_ENV_POSTGRES_PASSWORD ]; then
-    PASSWORD=$DB_ENV_POSTGRES_PASSWORD
-elif [ -n $DB_PASSWORD ]; then
-    PASSWORD=$DB_PASSWORD
+if [ $DB_ENV_POSTGRES_PASSWORD ]; then
+    password=$DB_ENV_POSTGRES_PASSWORD
+elif [ $DB_PASSWORD ]; then
+    password=$DB_PASSWORD
 else
     echo "You need set env DB_PASSWORD"
     exit 1
 fi
 
-# update password field in setttings.py
+# echo "username:"$username
+# echo "password:"$password
 
+# update password field in setttings.py
+set -i "s/wvcpasswd/$password/g" /srv/webvirtcloud/webvirtcloud/setttings.py
 
 # create database
-psql -v ON_ERROR_STOP=1 -d postgres://$USERNAME:$PASSWORD@db <<-EOSQL
-    CREATE USER wvc WITH PASSWORD '${PASSWORD}';
+psql -v ON_ERROR_STOP=1 -d postgres://$username:$password@db <<-EOSQL
+    CREATE USER wvc WITH PASSWORD '${password}';
     CREATE DATABASE wvc;
     GRANT ALL PRIVILEGES ON DATABASE wvc TO wvc;
 EOSQL
@@ -28,7 +30,7 @@ EOSQL
 cd /srv/webvirtcloud
 source venv/bin/activate
 
-# Another bug in migration "0002" of App logs.
+# A bug in migration "0002" of App logs.
 # I worked out a workaround
 sed -i 's/AddField/AlterField/g' logs/migrations/0002_auto_20150316_1420.py
 

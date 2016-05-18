@@ -1,7 +1,31 @@
 version: '2'
 services:
-  webvirtcloud:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: 'wvcpasswd'
+    container_name: db
+  wvc:
+    depends_on:
+      - db
+    ports:
+      - "6080:6080"
+    volumes:
+      - /srv/webvirtcloud
+    environment:
+      DB_PASSWORD: 'wvcpasswd'
+    links:
+      - db
+    image: daocloud.io/ken/wvc
+    container_name: wvc
+  web:
+    depends_on:
+      - wvc
     ports:
       - "80:80"
-      - "6080:6080"
-    image: daocloud.io/ken/webvirtcloud
+    volumes_from:
+      - wvc:ro
+    links:
+      - wvc
+    image: daocloud.io/ken/wvcweb
+    container_name: web
