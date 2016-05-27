@@ -1,7 +1,7 @@
 # webvirtcloud in Docker
 ## [webvirtcloud project](https://github.com/retspen/webvirtcloud) (Thanks to Anatoliy Guskov)
 
-[中文README](REAEME.md)
+[中文README](README.md)
 
 - There are two type of container：
 > 1. all-in-one type: all components (webvirtcloud, novncd, nginx, sqlite ) are running in one container
