@@ -1,6 +1,8 @@
 # webvirtcloud in Docker
 ## [webvirtcloud project](https://github.com/retspen/webvirtcloud) (Thanks to Anatoliy Guskov)
 
+[English README](REAEME.en.md)
+
 >[webvirtcloud](https://github.com/retspen/webvirtcloud)是一个用来管理KVM（实际上是通过libvirt）的基于浏览器的管理界面，但是安装配置步骤较多，不太方便，这里用Docker来简化安装配置。
 
 - 两个版本：
@@ -111,7 +113,7 @@ $ wget -O - https://clck.ru/9V9fH | sudo sh
 共有4种连接方式，前三种是网络连接，需要webvirtcloud容器和被管理的virsh服务器网络。最后一种只能运行于webvirtcloud容器和被管理virsh服务器在同一服务器上的场景。
 
 1. TCP连接
-virsh服务器需要配置virsh的网络访问，如果你之前按运行了virsh服务器的脚本，此配置已经生效。用户授权需要使用saslpasswd2 -a libvirt *username*命令。
+virsh服务器需要配置virsh的网络访问，如果你之前按运行了virsh服务器的脚本，此配置已经生效。用户授权需要使用`saslpasswd2 -a libvirt *username*`命令。
 
 添加用户
 ```
@@ -139,7 +141,7 @@ $ virsh -c qemu+tcp://IP_address/system nodeinfo
 
 2. SSH连接
 
-SSH连接方式使用virsh服务器上的用户和证书来访问virsh服务，那么首先是用ssh-keygen生成证书，然后将私有证书放入webvirtcloud服务器的www-data用户的.ssh目录中，将公有证书导入virsh服务器的用于连接的用户的.ssh目录的authorized_keys文件中。
+SSH连接方式使用virsh服务器上的用户和证书来访问virsh服务，那么首先是用`ssh-keygen`生成证书，然后将私有证书放入webvirtcloud服务器的www-data用户的.ssh目录中，将公有证书导入virsh服务器的用于连接的用户的.ssh目录的authorized_keys文件中。
 
 在allinone和standalone镜像中，都内置了公钥和私钥文件，以方便快速使用和测试，从安全角度考虑，你应该用自己的公钥私钥文件来替换。
 
