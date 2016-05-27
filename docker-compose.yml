@@ -1,9 +1,9 @@
 version: '2'
 services:
   db:
-    image: postgres
     environment:
       POSTGRES_PASSWORD: 'wvcpasswd'
+    image: postgres
     container_name: db
   wvc:
     depends_on:
@@ -16,7 +16,7 @@ services:
       DB_PASSWORD: 'wvcpasswd'
     links:
       - db
-    image: daocloud.io/ken/wvc
+    image: kenlee/wvc
     container_name: wvc
   web:
     depends_on:
@@ -27,5 +27,5 @@ services:
       - wvc:ro
     links:
       - wvc
-    image: daocloud.io/ken/wvcweb
+    image: kenlee/wvcweb
     container_name: web

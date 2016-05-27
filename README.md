@@ -18,7 +18,7 @@
 2. 运行webvirtcloud-allinone容器
 
 ```
-$ docker run -d --name webvirtcloud -p 80:80 -p 6080:6080 daocloud.io/ken/webvirtcloud
+$ docker run -d --name webvirtcloud -p 80:80 -p 6080:6080 kenlee/webvirtcloud
 ```
 或者使用docker-compose，下载allinon目录下的docker-compose.yml文件，然后在同一目录下运行
 ```
@@ -37,8 +37,9 @@ $ docker-compose up -d
 ```
 $ docker-compose up -d
 ```
-这个命令会拉起webvirtcloud, nginx和postgreSQL三个容器，nginx采用基于官方镜像的daocloud.io/ken/wvcweb及内置配置文件，postgreSQL则采用官方镜像。
-在启动后还需要执行初始化操作：
+这个命令会拉起webvirtcloud, nginx和postgreSQL三个容器，nginx采用基于官方镜像的kenlee/wvcweb及内置配置文件，postgreSQL则采用官方镜像。
+
+在启动后还需要执行一次初始化操作：
 ```
 $ docker exec -i wvc /init.sh
 ```
@@ -51,16 +52,14 @@ $ docker run -d --name postgres \
 
 $ docker run -it --rm --link postgres:db \
 > -e DB_PASSWORD=your_wvc_db_password \
-> daocloud.io/ken/wvc /init.sh
-
-> daocloud.io/ken/wvc /bin/true
-$ docker run -d --name wvc -p 6080:6080 --link postgres:db daocloud.io/ken/wvc
+> kenlee/wvc /init.sh
+$ docker run -d --name wvc -p 6080:6080 --link postgres:db kenlee/wvc
 $ docker run -d --name web -p 80:80 --link wvc \
 > --volumes-from wvc:ro \
-> daocloud.io/ken/wvcweb
+> kenlee/wvcweb
 ```
 
-对于最后nginx容器，如果需要指定不同的URL，则需要修改webvirtcloud.conf配置文件，如果还需要调整其他配置，则可以传入自己的nginx.conf文件，如下：
+对于最后nginx容器，如果需要指定不同的URL，则需要修改webvirtcloud.conf配置文件，如果还需要调整其他配置，则可以传入自己的nginx.conf文件，这时可以直接使用官方的nginx镜像而不是kenlee/wvcweb镜像，命令如下：
 
 ```
 $ docker run -d --name web -p 80:80 --link wvc \
@@ -151,6 +150,11 @@ $ docker exec -it webvirtcloud cat /var/www/.ssh/webvirtcloud_rsa.pub
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7zEEPi7AeG4Luk1nP7faf8KzWmyyMXQmNf7WMZOwJP08Zp9p6QJ727w6OFgTtMbL3miljXjjV7U9TC8mQBIJ9cRZFwFZZfsifFROSYE+OUjsw6IuzUaq3krPOqM71/iKm3jHIqd9JAu5M0MnwTGjd9aVs3aXPJ68PuVmaEXgsBql+4cSu0890GBY9BoOxE6i1Pdjxw6T6ZsxRnyAzx2Q9bBCXtVngjgQhS77vNhFENKlnqL170O17lAW+xHzr+ONULtFVqOveaqdVcZNGlb6KbN3otsUq00dE6ow2jZM9q4OhA7FSzoiQRVgPlr4JNj+soG3AR9fGHh7TwrkEdRad webvirtcloud
 ```
 
+或者用docker cp命令copy处理进行处理
+```
+$ docker cp /var/www/.ssh/id_rsa.pub ./webvirtcloud_rsa.pub
+```
+
 将显示的内容拷贝并添加到被管理virsh服务器的用于SSH连接（并属于libvirt组）的用户的~/.ssh/authorized_keys文件中就可以了。
 
 [更多内容......](https://github.com/retspen/webvirtmgr/wiki/Setup-SSH-Authorization)
@@ -165,15 +169,14 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7zEEPi7AeG4Luk1nP7faf8KzWmyyMXQmNf7WMZOwJ
 ```
 $ docker run -d --name webvirtcloud -p 80:80 -p 6080:6080 \
 > -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
-> daocloud.io/ken/webvirtcloud
+> kenlee/webvirtcloud
 ```
 
 - 对standalone镜像来说，启动容器的命令为：
 ```
-$ docker run -d --name wvc -p 8000:8000 --link db \
-> --volume-from wvcdata:/srv/webvirtcloud \
+$ docker run -d --name wvc -p 6080:6080 --link postgres:db \
 > -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
-> daocloud.io/ken/wvc
+> kenlee/wvc
 ```
 
 如果你用docker-compose的方式启动，则需要相应修改docker-compose.yml文件。
