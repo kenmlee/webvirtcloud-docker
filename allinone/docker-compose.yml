@@ -4,4 +4,4 @@ services:
     ports:
       - "80:80"
       - "6080:6080"
-    image: kenlee/webvirtcloud
+    image: kenlee/webvirtcloud-docker:allinone

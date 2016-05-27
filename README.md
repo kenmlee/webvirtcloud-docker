@@ -18,7 +18,7 @@
 2. 运行webvirtcloud-allinone容器
 
 ```
-$ docker run -d --name webvirtcloud -p 80:80 -p 6080:6080 kenlee/webvirtcloud
+$ docker run -d --name webvirtcloud -p 80:80 -p 6080:6080 kenlee/webvirtcloud-docker:allinone
 ```
 或者使用docker-compose，下载allinon目录下的docker-compose.yml文件，然后在同一目录下运行
 ```
@@ -37,7 +37,7 @@ $ docker-compose up -d
 ```
 $ docker-compose up -d
 ```
-这个命令会拉起webvirtcloud, nginx和postgreSQL三个容器，nginx采用基于官方镜像的kenlee/wvcweb及内置配置文件，postgreSQL则采用官方镜像。
+这个命令会拉起webvirtcloud, nginx和postgreSQL三个容器，nginx采用基于官方镜像的kenlee/webvirtcloud-docker:wvcweb及内置配置文件，postgreSQL则采用官方镜像。
 
 在启动后还需要执行一次初始化操作：
 ```
@@ -52,14 +52,14 @@ $ docker run -d --name postgres \
 
 $ docker run -it --rm --link postgres:db \
 > -e DB_PASSWORD=your_wvc_db_password \
-> kenlee/wvc /init.sh
-$ docker run -d --name wvc -p 6080:6080 --link postgres:db kenlee/wvc
+> kenlee/webvirtcloud-docker:latest /init.sh
+$ docker run -d --name wvc -p 6080:6080 --link postgres:db kenlee/webvirtcloud-docker:latest
 $ docker run -d --name web -p 80:80 --link wvc \
 > --volumes-from wvc:ro \
-> kenlee/wvcweb
+> kenlee/webvirtcloud-docker:web
 ```
 
-对于最后nginx容器，如果需要指定不同的URL，则需要修改webvirtcloud.conf配置文件，如果还需要调整其他配置，则可以传入自己的nginx.conf文件，这时可以直接使用官方的nginx镜像而不是kenlee/wvcweb镜像，命令如下：
+对于最后nginx容器，如果需要指定不同的URL，则需要修改webvirtcloud.conf配置文件，如果还需要调整其他配置，则可以传入自己的nginx.conf文件，这时可以直接使用官方的nginx镜像而不是kenlee/webvirtcloud-docker:web镜像，命令如下：
 
 ```
 $ docker run -d --name web -p 80:80 --link wvc \
@@ -68,7 +68,7 @@ $ docker run -d --name web -p 80:80 --link wvc \
 > -v ${PWD}/webvirtcloud.conf:/etc/nginx/conf.d/webvirtcloud.conf \
 > nginx
 ```
-其中配置文件webvirtcloud.conf中，注意保持LINK的名称“wvc”，如果你LINK的容器名称不知"wvc"，则需要做相应修改
+其中配置文件webvirtcloud.conf中，注意保持LINK的名称“wvc”，如果你LINK的容器名称不是"wvc"，则需要做相应修改
 ```
 server {
     listen 80;
@@ -169,14 +169,14 @@ $ docker cp /var/www/.ssh/id_rsa.pub ./webvirtcloud_rsa.pub
 ```
 $ docker run -d --name webvirtcloud -p 80:80 -p 6080:6080 \
 > -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
-> kenlee/webvirtcloud
+> kenlee/webvirtcloud-docker:allinone
 ```
 
 - 对standalone镜像来说，启动容器的命令为：
 ```
 $ docker run -d --name wvc -p 6080:6080 --link postgres:db \
 > -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
-> kenlee/wvc
+> kenlee/webvirtcloud-docker:latest
 ```
 
 如果你用docker-compose的方式启动，则需要相应修改docker-compose.yml文件。

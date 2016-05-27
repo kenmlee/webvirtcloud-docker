@@ -11,12 +11,12 @@ services:
     ports:
       - "6080:6080"
     volumes:
-      - /srv/webvirtcloud
+      - /srv/webvirtcloud-docker
     environment:
       DB_PASSWORD: 'wvcpasswd'
     links:
       - db
-    image: kenlee/wvc
+    image: kenlee/webvirtcloud-docker:latest
     container_name: wvc
   web:
     depends_on:
@@ -27,5 +27,5 @@ services:
       - wvc:ro
     links:
       - wvc
-    image: kenlee/wvcweb
+    image: kenlee/webvirtcloud-docker:web
     container_name: web
